@@ -1,0 +1,10 @@
+/.env
+/.idea
+/migrate
+/bin
+
+.env
+
+/uploads
+
+./uploads
