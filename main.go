@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/rs/zerolog/log"
+	"golang_boilerplate_with_gin/config"
 	"golang_boilerplate_with_gin/controllers"
 	"golang_boilerplate_with_gin/db"
 	"golang_boilerplate_with_gin/middleware"
 	"golang_boilerplate_with_gin/models"
-	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -14,25 +15,34 @@ import (
 )
 
 func main() {
-	loadEnv()
-	loadDatabase()
-	serveApplication()
+	cfg := loadEnv()
+	loadDatabase(cfg)
+	serveApplication(cfg)
 }
 
-func loadEnv() {
+func loadEnv() *config.Config {
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal().Err(err).Msg("Error loading .env file")
 	}
+
+	cfg, err := config.NewConfig()
+	if err != nil {
+		log.Fatal().Err(err).Msg("Config parsing failed")
+	}
+	return cfg
 }
 
-func loadDatabase() {
-	_ = db.ConnectPostgres()
+func loadDatabase(cfg *config.Config) {
+	_, err := db.ConnectPostgres(cfg)
+	if err != nil {
+		log.Fatal().Err(err).Msg("db connection error. please check db connection")
+	}
 	_ = db.Database.AutoMigrate(&models.User{})
 	_ = db.Database.AutoMigrate(&models.Entry{})
 }
 
-func serveApplication() {
+func serveApplication(cfg *config.Config) {
 	router := gin.Default()
 
 	publicRoutes := router.Group("/auth")
@@ -45,5 +55,5 @@ func serveApplication() {
 	protectedRoutes.GET("/entry", controllers.GetAllEntries)
 
 	_ = router.Run(os.Getenv("APPLICATION_PORT"))
-	fmt.Printf("Server running on port %v", os.Getenv("APPLICATION_PORT"))
+	fmt.Printf("Server running on port %v", cfg.ApplicationPort)
 }
