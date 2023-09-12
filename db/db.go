@@ -1,25 +1,32 @@
 package db
 
 import (
+	"github.com/rs/zerolog/log"
 	"golang_boilerplate_with_gin/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 )
 
-func Init(url string) (*gorm.DB, error) {
-	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
+type PgRepository struct {
+	db *gorm.DB
+}
+
+func NewPgRepository(dbUrl string) (*PgRepository, error) {
+	db, err := gorm.Open(postgres.Open(dbUrl), &gorm.Config{})
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Error().Err(err)
 		return nil, err
 	}
 
 	// REMOVE WHEN TEST DONE
 	errMigrate := db.AutoMigrate(&models.Book{})
 	if errMigrate != nil {
-		log.Fatalln(errMigrate)
+		log.Error().Err(errMigrate)
 	}
 
-	return db, nil
+	return &PgRepository{
+		db: db,
+	}, nil
+
 }

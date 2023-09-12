@@ -1,37 +1,22 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
-	"golang_boilerplate_with_gin/controllers/example_controller"
-	"golang_boilerplate_with_gin/db"
-	"log"
+	"github.com/joho/godotenv"
+	"github.com/rs/zerolog/log"
+	"golang_boilerplate_with_gin/config"
+	"golang_boilerplate_with_gin/httpserver"
+	"golang_boilerplate_with_gin/state"
 )
 
 func main() {
-	viper.SetConfigFile(".env")
-	err := viper.ReadInConfig()
+	_ = godotenv.Load()
+
+	cfg, err := config.NewConfig()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Msg("Config parsing failed")
 	}
 
-	port := viper.Get("PORT").(string)
-	dbUrl := viper.Get("DB_URL").(string)
+	appState := state.NewState(cfg)
+	httpserver.Server(appState)
 
-	router := gin.Default()
-	dbHandler, dbErr := db.Init(dbUrl)
-	if dbErr != nil {
-		log.Fatal(dbErr)
-	}
-
-	example_controller.RegisterRoutes(router, dbHandler)
-
-	router.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"port":  port,
-			"dbUrl": dbUrl,
-		})
-	})
-
-	_ = router.Run(port)
 }
