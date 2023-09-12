@@ -1,10 +1,21 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"golang_boilerplate_with_gin/db"
+	"gorm.io/gorm"
+)
 
-type Book struct {
+type Entry struct {
 	gorm.Model
-	Title       string `json:"title"`
-	Author      string `json:"author"`
-	Description string `json:"description"`
+	Content string `gorm:"type:text" json:"content"`
+	UserID  uint
+}
+
+func (entry *Entry) Save() (*Entry, error) {
+
+	err := db.Database.Create(&entry).Error
+	if err != nil {
+		return &Entry{}, err
+	}
+	return entry, nil
 }

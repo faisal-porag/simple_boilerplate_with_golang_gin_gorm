@@ -1,32 +1,33 @@
 package db
 
 import (
+	"fmt"
 	"github.com/rs/zerolog/log"
-	"golang_boilerplate_with_gin/models"
+	"os"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-type PgRepository struct {
-	db *gorm.DB
-}
+var Database *gorm.DB
 
-func NewPgRepository(dbUrl string) (*PgRepository, error) {
-	db, err := gorm.Open(postgres.Open(dbUrl), &gorm.Config{})
+func ConnectPostgres() *gorm.DB {
+	var err error
+	host := os.Getenv("DB_HOST")
+	username := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	databaseName := os.Getenv("DB_NAME")
+	port := os.Getenv("DB_PORT")
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Dhaka", host, username, password, databaseName, port)
+	Database, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		log.Error().Err(err)
-		return nil, err
+		return nil
+	} else {
+		log.Info().Msg("Successfully connected to the database")
 	}
 
-	// REMOVE WHEN TEST DONE
-	errMigrate := db.AutoMigrate(&models.Book{})
-	if errMigrate != nil {
-		log.Error().Err(errMigrate)
-	}
-
-	return &PgRepository{
-		db: db,
-	}, nil
-
+	return Database
 }
