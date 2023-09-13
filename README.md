@@ -1,4 +1,4 @@
-## 
+## Simple Golang Boilerplate Using Gin, GORM, Postgres
 
 ### Gin Framework
 
