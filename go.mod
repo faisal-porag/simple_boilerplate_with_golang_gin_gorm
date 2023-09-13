@@ -4,11 +4,12 @@ go 1.20
 
 require (
 	github.com/caarlos0/env/v6 v6.10.1
-	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-chi/chi v1.5.5
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/joho/godotenv v1.5.1
 	github.com/rs/zerolog v1.30.0
+	github.com/signintech/gopdf v0.19.0
 	golang.org/x/crypto v0.9.0
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/gorm v1.25.4
@@ -38,6 +39,8 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
+	github.com/phpdave11/gofpdi v1.0.14-0.20211212211723-1f10f9844311 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
