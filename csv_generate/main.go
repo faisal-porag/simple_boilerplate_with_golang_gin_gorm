@@ -33,6 +33,10 @@ func generateCSVData() []*Person {
 			Address: "Kishoreganj",
 			Phone:   "987784",
 		}},
+		{Name: "Faisal", Age: 29, City: "Dhaka", Contact: Contact{
+			Address: "Dhaka",
+			Phone:   "79089656475",
+		}},
 	}
 
 	return data
